@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "moduleDetection": "force",
+        "module": "esnext",
+        "target": "esnext",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "moduleResolution": "bundler",
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

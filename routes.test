@@ -1,0 +1,152 @@
+import request from "supertest";
+import { createApp } from "../app";
+import * as db from "../db";
+
+jest.mock("../db");
+
+const app = createApp();
+
+const mockLaunches = [
+  {
+    launch_id: "abc1",
+    mission_name: "FalconSat",
+    flight_number: 1,
+    date_utc: "2006-03-24T22:30:00.000Z",
+    status: "failed",
+    rocket_id: "rocket-1",
+  },
+  {
+    launch_id: "abc2",
+    mission_name: "DemoSat",
+    flight_number: 2,
+    date_utc: "2007-03-21T01:10:00.000Z",
+    status: "success",
+    rocket_id: "rocket-1",
+  },
+];
+
+const mockSummary = { total: 2, success: 1, failed: 1, upcoming: 0, unknown: 0 };
+const mockByYear  = [
+  { year: 2006, total: 1, success: 0, failed: 1, upcoming: 0 },
+  { year: 2007, total: 1, success: 1, failed: 0, upcoming: 0 },
+];
+
+// ─── /health ──────────────────────────────────────────────────────────────────
+
+describe("GET /health", () => {
+  it("returns 200 with status ok", async () => {
+    const res = await request(app).get("/health");
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe("ok");
+    expect(res.body.ts).toBeDefined();
+  });
+});
+
+// ─── /launches ────────────────────────────────────────────────────────────────
+
+describe("GET /launches", () => {
+  beforeEach(() => {
+    (db.getLaunches as jest.Mock).mockResolvedValue(mockLaunches);
+  });
+
+  it("returns list of launches", async () => {
+    const res = await request(app).get("/launches");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(2);
+    expect(res.body[0].launch_id).toBe("abc1");
+  });
+
+  it("passes filters to db.getLaunches", async () => {
+    await request(app).get("/launches?status=success&year=2007&search=Demo&limit=10&offset=0");
+    expect(db.getLaunches).toHaveBeenCalledWith({
+      status: "success",
+      year:   2007,
+      search: "Demo",
+      limit:  10,
+      offset: 0,
+    });
+  });
+
+  it("returns 400 for invalid status", async () => {
+    const res = await request(app).get("/launches?status=invalid_status");
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Invalid query params");
+  });
+
+  it("returns 400 for invalid year", async () => {
+    const res = await request(app).get("/launches?year=1800");
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 500 when db throws", async () => {
+    (db.getLaunches as jest.Mock).mockRejectedValue(new Error("DynamoDB down"));
+    const res = await request(app).get("/launches");
+    expect(res.status).toBe(500);
+    expect(res.body.error).toBe("DynamoDB down");
+  });
+});
+
+// ─── /launches/:id ────────────────────────────────────────────────────────────
+
+describe("GET /launches/:id", () => {
+  it("returns the launch when found", async () => {
+    (db.getLaunchById as jest.Mock).mockResolvedValue(mockLaunches[0]);
+    const res = await request(app).get("/launches/abc1");
+    expect(res.status).toBe(200);
+    expect(res.body.launch_id).toBe("abc1");
+  });
+
+  it("returns 404 when not found", async () => {
+    (db.getLaunchById as jest.Mock).mockResolvedValue(null);
+    const res = await request(app).get("/launches/doesnotexist");
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe("Launch not found");
+  });
+
+  it("returns 500 when db throws", async () => {
+    (db.getLaunchById as jest.Mock).mockRejectedValue(new Error("Timeout"));
+    const res = await request(app).get("/launches/abc1");
+    expect(res.status).toBe(500);
+  });
+});
+
+// ─── /stats/summary ───────────────────────────────────────────────────────────
+
+describe("GET /stats/summary", () => {
+  it("returns summary counts", async () => {
+    (db.getSummary as jest.Mock).mockResolvedValue(mockSummary);
+    const res = await request(app).get("/stats/summary");
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(2);
+    expect(res.body.success).toBe(1);
+    expect(res.body.failed).toBe(1);
+  });
+
+  it("returns 500 when db throws", async () => {
+    (db.getSummary as jest.Mock).mockRejectedValue(new Error("fail"));
+    const res = await request(app).get("/stats/summary");
+    expect(res.status).toBe(500);
+  });
+});
+
+// ─── /stats/by-year ───────────────────────────────────────────────────────────
+
+describe("GET /stats/by-year", () => {
+  it("returns yearly stats sorted by year", async () => {
+    (db.getByYear as jest.Mock).mockResolvedValue(mockByYear);
+    const res = await request(app).get("/stats/by-year");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(2);
+    expect(res.body[0].year).toBe(2006);
+    expect(res.body[1].year).toBe(2007);
+  });
+});
+
+// ─── 404 ─────────────────────────────────────────────────────────────────────
+
+describe("Unknown routes", () => {
+  it("returns 404 for unknown routes", async () => {
+    const res = await request(app).get("/this/does/not/exist");
+    expect(res.status).toBe(404);
+  });
+});
