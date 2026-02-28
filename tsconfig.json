@@ -1,19 +1,12 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "moduleDetection": "force",
-        "module": "esnext",
-        "target": "esnext",
-        "allowJs": true,
-        "esModuleInterop": true,
-        "isolatedModules": true,
-        "moduleResolution": "bundler",
-    },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
-    ]
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "strict": true
+  },
+  "include": ["src"]
 }
