@@ -97,3 +97,7 @@ export async function getByYear(): Promise<YearStat[]> {
 
     return [...map.values()].sort((a, b) => a.year - b.year);
 }
+
+
+
+
