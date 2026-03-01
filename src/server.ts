@@ -4,6 +4,7 @@ import helmet  from "helmet";
 import morgan  from "morgan";
 import { router } from "./routes/launches.routes";
 import { setupSwagger } from "./docs/swagger";
+import { health } from "./controllers/launches.controller";
 const app = express();
 setupSwagger(app); // antes de las rutas
 
@@ -14,7 +15,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(morgan("combined"));
-
+app.get("/health", health);
 app.use("/", router);
 
 app.use((_req: Request, res: Response) => {

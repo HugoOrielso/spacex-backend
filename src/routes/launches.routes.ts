@@ -3,7 +3,7 @@ import { health, listLaunches, getLaunchById, getSummary, getByYear } from "../c
 
 export const router = Router();
 
-router.get("/health", health);
+// router.get("/health", health);
 
 router.get("/launches", listLaunches);
 
