@@ -27,14 +27,6 @@
                 {
                     "name": "PORT",
                     "valueFrom": "arn:aws:secretsmanager:us-east-2:148761674962:secret:spacex-backend-secrets-VBy5gf:PORT::"
-                },
-                {
-                    "name": "AWS_ACCESS_KEY_ID",
-                    "valueFrom": "arn:aws:secretsmanager:us-east-2:148761674962:secret:spacex-backend-aws-creds-Qm4aeN:AWS_ACCESS_KEY_ID::"
-                },
-                {
-                    "name": "AWS_SECRET_ACCESS_KEY",
-                    "valueFrom": "arn:aws:secretsmanager:us-east-2:148761674962:secret:spacex-backend-aws-creds-Qm4aeN:AWS_SECRET_ACCESS_KEY::"
                 }
             ],
             "environment": [
