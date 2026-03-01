@@ -22,11 +22,11 @@
             "secrets": [
                 {
                     "name": "TABLE_NAME",
-                    "valueFrom": "arn:aws:secretsmanager:us-east-2:148761674962:secret:spacex-backend-secrets-kSlcVf:TABLE_NAME::"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-2:148761674962:secret:spacex-backend-secrets-E4UVIt:TABLE_NAME::"
                 },
                 {
                     "name": "PORT",
-                    "valueFrom": "arn:aws:secretsmanager:us-east-2:148761674962:secret:spacex-backend-secrets-kSlcVf:PORT::"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-2:148761674962:secret:spacex-backend-secrets-E4UVIt:PORT::"
                 }
             ],
             "environment": [
