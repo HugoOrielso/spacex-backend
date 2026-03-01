@@ -23,7 +23,7 @@ app.use((_req: Request, res: Response) => {
 });
 
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    console.error(err);
+    console.error(err);  // ← ¿Está este console.error?
     const message = err instanceof Error ? err.message : "Internal server error";
     res.status(500).json({ error: message });
 });
