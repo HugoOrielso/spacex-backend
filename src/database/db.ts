@@ -3,7 +3,6 @@ config();  // Cargar variables de entorno desde .env
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { Launch, LaunchFilters, Summary, YearStat } from "../lib/types";
-// ─── CLIENT ───────────────────────────────────────────────────────────────────
 
 const raw = new DynamoDBClient({
     region: process.env.AWS_DEFAULT_REGION ?? "us-east-1",
@@ -16,7 +15,6 @@ export const docClient = DynamoDBDocumentClient.from(raw, {
 
 export const TABLE_NAME = process.env.TABLE_NAME ?? "spaces_launches";
 
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
 
 async function scanAll(): Promise<Launch[]> {
     const items: Launch[] = [];
@@ -36,7 +34,6 @@ async function scanAll(): Promise<Launch[]> {
     return items;
 }
 
-// ─── REPOSITORY ───────────────────────────────────────────────────────────────
 
 export async function getLaunches(filters: LaunchFilters): Promise<Launch[]> {
     let items = await scanAll();
@@ -54,7 +51,6 @@ export async function getLaunches(filters: LaunchFilters): Promise<Launch[]> {
         items = items.filter(i => i.mission_name?.toLowerCase().includes(q));
     }
 
-    // Ordenar por fecha descendente
     items.sort((a, b) => (b.date_utc ?? "").localeCompare(a.date_utc ?? ""));
 
     const limit = filters.limit ?? 200;
@@ -101,13 +97,3 @@ export async function getByYear(): Promise<YearStat[]> {
 
     return [...map.values()].sort((a, b) => a.year - b.year);
 }
-
-
-
-
-
-
-
-
-
-

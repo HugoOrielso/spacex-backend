@@ -12,7 +12,7 @@ const ListQuerySchema = z.object({
 });
 
 
-export const health = (_req: Request, res: Response) => {
+export const health = (_req: Request, res: Response, mockNext: NextFunction) => {
   res.json({ status: "ok", ts: new Date().toISOString() });
 };
 
