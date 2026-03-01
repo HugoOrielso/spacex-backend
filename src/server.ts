@@ -1,11 +1,11 @@
-config(); 
 import express, { Request, Response, NextFunction } from "express";
 import cors    from "cors";
 import helmet  from "helmet";
 import morgan  from "morgan";
-import {config} from "dotenv";
 import { router } from "./routes/launches.routes";
+import { setupSwagger } from "./docs/swagger";
 const app = express();
+setupSwagger(app); // antes de las rutas
 
 
 app.use(express.json());
