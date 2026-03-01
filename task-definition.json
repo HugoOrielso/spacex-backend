@@ -20,19 +20,19 @@
       "secrets": [
         {
           "name": "TABLE_NAME",
-          "valueFrom": "spacex-backend-secrets:TABLE_NAME::"
+          "valueFrom": "ARN_SPACEX_BACKEND_SECRETS:TABLE_NAME::"
         },
         {
           "name": "PORT",
-          "valueFrom": "spacex-backend-secrets:PORT::"
+          "valueFrom": "ARN_SPACEX_BACKEND_SECRETS:PORT::"
         },
         {
           "name": "AWS_ACCESS_KEY_ID",
-          "valueFrom": "spacex-backend-aws-creds:AWS_ACCESS_KEY_ID::"
+          "valueFrom": "ARN_SPACEX_BACKEND_AWS_CREDS:AWS_ACCESS_KEY_ID::"
         },
         {
           "name": "AWS_SECRET_ACCESS_KEY",
-          "valueFrom": "spacex-backend-aws-creds:AWS_SECRET_ACCESS_KEY::"
+          "valueFrom": "ARN_SPACEX_BACKEND_AWS_CREDS:AWS_SECRET_ACCESS_KEY::"
         }
       ],
       "environment": [
